@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Source {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   @default("telegram") // telegram, rss, etc.
+  channelName String   @unique @map("channel_name")
+  channelUrl  String   @map("channel_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  telegramPosts TelegramPost[]
+
+  @@map("sources")
+}
+
+model TelegramPost {
+  id                String   @id @default(cuid())
+  sourceId          String   @map("source_id")
+  channelName       String   @map("channel_name")
+  telegramMessageId Int      @map("telegram_message_id")
+  telegramPostUrl   String   @map("telegram_post_url")
+  originalText      String   @map("original_text")
+  originalDate      DateTime @map("original_date")
+  hasMedia          Boolean  @default(false) @map("has_media")
+  mediaType         String?  @map("media_type")
+  mediaUrl          String?  @map("media_url")
+  rawPayload        Json?    @map("raw_payload")
+  processed         Boolean  @default(false)
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  source  Source    @relation(fields: [sourceId], references: [id])
+  article Article?
+
+  @@unique([channelName, telegramMessageId])
+  @@map("telegram_posts")
+}
+
+model Article {
+  id             String    @id @default(cuid())
+  telegramPostId String    @unique @map("telegram_post_id")
+  titleSq        String    @map("title_sq")
+  subtitleSq     String?   @map("subtitle_sq")
+  summarySq      String?   @map("summary_sq")
+  bodySq         String    @map("body_sq")
+  slug           String    @unique
+  seoTitle       String?   @map("seo_title")
+  seoDescription String?   @map("seo_description")
+  category       String    @default("botë")
+  urgency        String    @default("update") // breaking, update, analysis
+  sourceName     String    @map("source_name")
+  sourceUrl      String    @map("source_url")
+  imageMode      String    @default("generated") @map("image_mode") // generated, source-link, admin-approved
+  featuredImage  String?   @map("featured_image")
+  editorNote     String?   @map("editor_note")
+  whyItMatters   String?   @map("why_it_matters")
+  extractedFacts Json?     @map("extracted_facts")
+  status         String    @default("draft") // draft, pending, published, rejected
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  telegramPost TelegramPost    @relation(fields: [telegramPostId], references: [id])
+  versions     ArticleVersion[]
+
+  @@index([status])
+  @@index([category])
+  @@index([publishedAt])
+  @@index([slug])
+  @@map("articles")
+}
+
+model ArticleVersion {
+  id        String   @id @default(cuid())
+  articleId String   @map("article_id")
+  titleSq   String   @map("title_sq")
+  bodySq    String   @map("body_sq")
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  article Article @relation(fields: [articleId], references: [id])
+
+  @@map("article_versions")
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  color String @default("#6366f1")
+  icon  String?
+
+  @@map("categories")
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  articleId String?  @map("article_id")
+  type      String   // thumbnail, source-image, generated
+  url       String
+  altText   String?  @map("alt_text")
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("media_assets")
+}
+
+model Settings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+
+  @@map("settings")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String?
+  role         String   @default("editor")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  auditLogs AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  details   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user AdminUser? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
