@@ -202,21 +202,30 @@ export async function processPost(telegramPostId: string) {
     },
   });
 
-  // Generate thumbnail
+  // Set featured image: use Telegram photo if available, otherwise generate
   try {
-    const thumbPath = await generateThumbnail(
-      article.title,
-      facts.category,
-      facts.urgency,
-      new Date(),
-      slug
-    );
-    await prisma.article.update({
-      where: { id: createdArticle.id },
-      data: { featuredImage: thumbPath },
-    });
+    let featuredImage: string | null = null;
+
+    if (post.mediaUrl && post.mediaType === "photo") {
+      featuredImage = post.mediaUrl;
+    } else {
+      featuredImage = await generateThumbnail(
+        article.title,
+        facts.category,
+        facts.urgency,
+        new Date(),
+        slug
+      );
+    }
+
+    if (featuredImage) {
+      await prisma.article.update({
+        where: { id: createdArticle.id },
+        data: { featuredImage },
+      });
+    }
   } catch (err) {
-    console.error(`Failed to generate thumbnail for ${slug}:`, err);
+    console.error(`Failed to set image for ${slug}:`, err);
   }
 
   // Mark post as processed
