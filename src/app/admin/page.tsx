@@ -117,6 +117,26 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleProcess = async () => {
+    setActionLoading("process");
+    try {
+      const res = await fetch("/api/process", { method: "POST" });
+      const data = await res.json();
+      if (data.error) {
+        console.error("Process error:", data.error, data.details);
+        alert(`Process: ${data.error}${data.details ? '\n' + data.details : ''}`);
+      } else {
+        alert(`Processed ${data.processed} articles${data.errors?.length ? `, ${data.errors.length} errors` : ''}`);
+      }
+      await fetchData();
+    } catch (err) {
+      console.error("Process failed:", err);
+      alert("Process failed: " + String(err));
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleIngest = async () => {
     setActionLoading("ingest");
     try {
@@ -193,6 +213,14 @@ export default function AdminDashboard() {
           >
             <Download className="w-3.5 h-3.5" />
             {actionLoading === "ingest" ? "Duke marrë..." : "Merr Postime"}
+          </button>
+          <button
+            onClick={handleProcess}
+            disabled={actionLoading === "process"}
+            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-medium rounded-lg transition-colors"
+          >
+            <Zap className="w-3.5 h-3.5" />
+            {actionLoading === "process" ? "Duke procesuar..." : "Proceso me AI"}
           </button>
           <Link
             href="/admin/settings"
