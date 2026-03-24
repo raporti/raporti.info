@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import ArticleCard from "@/components/article/ArticleCard";
 import { CATEGORIES, getCategoryName, getCategoryColor } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import type { ArticleCard as ArticleCardType } from "@/types";
 
@@ -37,33 +38,59 @@ export default async function CategoryPage({ params }: Props) {
   })) as ArticleCardType[];
 
   const catColor = getCategoryColor(slug);
+  const heroArticle = articles[0];
+  const restArticles = articles.slice(1);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <span
-            className="w-1.5 h-8 rounded-full"
-            style={{ backgroundColor: catColor }}
-          />
-          <h1 className="text-3xl font-extrabold text-text-primary">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm mb-6">
+        <Link href="/" className="text-text-muted hover:text-accent transition-colors">
+          Kryefaqja
+        </Link>
+        <span className="text-text-muted">/</span>
+        <span className="font-medium" style={{ color: catColor }}>
+          {category.name}
+        </span>
+      </div>
+
+      {/* Category header */}
+      <div className="section-divider mb-8">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-text-primary flex items-center gap-3">
+            <span
+              className="w-1.5 h-8 rounded-full"
+              style={{ backgroundColor: catColor }}
+            />
             {category.name}
           </h1>
+          <span className="text-sm text-text-muted">
+            {articles.length} artikuj
+          </span>
         </div>
-        <p className="text-text-muted text-sm">
-          {articles.length} artikuj në këtë kategori
-        </p>
       </div>
 
       {articles.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+        <div>
+          {/* Hero article for category */}
+          {heroArticle && (
+            <div className="mb-8">
+              <ArticleCard article={heroArticle} variant="hero" />
+            </div>
+          )}
+
+          {/* Rest of articles */}
+          {restArticles.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {restArticles.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          )}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-text-muted">
+        <div className="flex flex-col items-center justify-center py-24">
+          <p className="text-text-muted text-lg">
             Asnjë artikull në këtë kategori ende.
           </p>
         </div>

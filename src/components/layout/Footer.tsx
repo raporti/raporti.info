@@ -5,35 +5,33 @@ import { CATEGORIES } from "@/lib/utils";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-bg-secondary mt-16">
+    <footer className="bg-nav-bg mt-16">
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Brand */}
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">R</span>
-              </div>
-              <span className="text-xl font-bold text-text-primary tracking-tight">
-                RAPORTI
+          <div className="md:col-span-4">
+            <Link href="/" className="inline-block mb-4">
+              <span className="text-2xl font-extrabold text-white tracking-tight">
+                RAPORTI<span className="text-accent">.</span>
               </span>
             </Link>
-            <p className="text-sm text-text-muted leading-relaxed">
+            <p className="text-sm text-nav-text/60 leading-relaxed max-w-sm">
               Platforma juaj e besueshme për lajme të shpejta dhe të sakta në gjuhën shqipe.
+              Lajme nga bota, politika, ekonomia dhe më shumë.
             </p>
           </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider">
+          {/* Categories - split into two columns */}
+          <div className="md:col-span-3">
+            <h3 className="text-xs font-semibold text-nav-text/40 mb-4 uppercase tracking-widest">
               Kategoritë
             </h3>
-            <ul className="space-y-2">
-              {CATEGORIES.slice(0, 6).map((cat) => (
+            <ul className="space-y-2.5">
+              {CATEGORIES.slice(0, 5).map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={`/kategori/${cat.slug}`}
-                    className="text-sm text-text-muted hover:text-text-primary transition-colors"
+                    className="text-sm text-nav-text/60 hover:text-white transition-colors"
                   >
                     {cat.name}
                   </Link>
@@ -42,56 +40,60 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider">
-              Navigimi
+          <div className="md:col-span-2">
+            <h3 className="text-xs font-semibold text-nav-text/40 mb-4 uppercase tracking-widest">
+              &nbsp;
             </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-sm text-text-muted hover:text-text-primary transition-colors">
-                  Kryefaqja
-                </Link>
-              </li>
-              <li>
-                <Link href="/kerko" className="text-sm text-text-muted hover:text-text-primary transition-colors">
-                  Kërko
-                </Link>
-              </li>
+            <ul className="space-y-2.5">
+              {CATEGORIES.slice(5).map((cat) => (
+                <li key={cat.slug}>
+                  <Link
+                    href={`/kategori/${cat.slug}`}
+                    className="text-sm text-nav-text/60 hover:text-white transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Newsletter placeholder */}
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider">
+          {/* Newsletter */}
+          <div className="md:col-span-3">
+            <h3 className="text-xs font-semibold text-nav-text/40 mb-4 uppercase tracking-widest">
               Newsletter
             </h3>
-            <p className="text-sm text-text-muted mb-3">
-              Regjistrohu për lajmet e fundit.
+            <p className="text-sm text-nav-text/60 mb-4">
+              Merrni lajmet kryesore direkt në emailin tuaj.
             </p>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="flex gap-2"
+              className="space-y-2"
             >
               <input
                 type="email"
                 placeholder="Email juaj"
-                className="flex-1 bg-bg-primary border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
+                className="w-full bg-white/10 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-nav-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
               />
-              <button className="px-3 py-2 bg-accent hover:bg-accent-hover text-white text-xs font-medium rounded-lg transition-colors">
+              <button className="w-full px-4 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors">
                 Abonohu
               </button>
             </form>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-text-muted">
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-nav-text/40">
             &copy; {new Date().getFullYear()} Raporti. Të gjitha të drejtat e rezervuara.
           </p>
-          <p className="text-xs text-text-muted">
-            Powered by AI journalism assistant
-          </p>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-xs text-nav-text/40 hover:text-white transition-colors">
+              Kryefaqja
+            </Link>
+            <Link href="/kerko" className="text-xs text-nav-text/40 hover:text-white transition-colors">
+              Kërko
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

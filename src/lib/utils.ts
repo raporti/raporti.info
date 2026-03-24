@@ -66,7 +66,7 @@ export function getCategoryName(slug: string): string {
 }
 
 export const URGENCY_CONFIG = {
-  breaking: { label: "Lajm i Fundit", color: "#ef4444", bgColor: "bg-red-500/10", textColor: "text-red-400" },
-  update: { label: "Përditësim", color: "#f59e0b", bgColor: "bg-amber-500/10", textColor: "text-amber-400" },
-  analysis: { label: "Analizë", color: "#3b82f6", bgColor: "bg-blue-500/10", textColor: "text-blue-400" },
+  breaking: { label: "Lajm i Fundit", color: "#dc2626", bgColor: "bg-red-50", textColor: "text-red-700" },
+  update: { label: "Përditësim", color: "#d97706", bgColor: "bg-amber-50", textColor: "text-amber-700" },
+  analysis: { label: "Analizë", color: "#2563eb", bgColor: "bg-blue-50", textColor: "text-blue-700" },
 } as const;

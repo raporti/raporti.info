@@ -21,11 +21,11 @@ export default function ShareButtons({ url, title }: Props) {
   const encodedTitle = encodeURIComponent(title);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <span className="text-xs text-text-muted mr-1">Ndaje:</span>
       <button
         onClick={copyLink}
-        className="p-2 rounded-lg bg-bg-hover hover:bg-border/30 text-text-secondary hover:text-text-primary transition-colors"
+        className="p-2 rounded-lg hover:bg-bg-secondary text-text-muted hover:text-text-primary transition-colors"
         title="Kopjo linkun"
       >
         {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
@@ -34,7 +34,7 @@ export default function ShareButtons({ url, title }: Props) {
         href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg bg-bg-hover hover:bg-border/30 text-text-secondary hover:text-text-primary transition-colors"
+        className="p-2 rounded-lg hover:bg-bg-secondary text-text-muted hover:text-text-primary transition-colors"
         title="Ndaje në X"
       >
         <Twitter className="w-4 h-4" />
@@ -43,7 +43,7 @@ export default function ShareButtons({ url, title }: Props) {
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg bg-bg-hover hover:bg-border/30 text-text-secondary hover:text-text-primary transition-colors"
+        className="p-2 rounded-lg hover:bg-bg-secondary text-text-muted hover:text-text-primary transition-colors"
         title="Ndaje në Facebook"
       >
         <Facebook className="w-4 h-4" />
