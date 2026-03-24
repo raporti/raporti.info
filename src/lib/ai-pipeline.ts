@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { prisma } from "./db";
+import { generateThumbnail } from "./thumbnail";
 
 function getAIClient() {
   return new OpenAI({
@@ -201,6 +202,23 @@ export async function processPost(telegramPostId: string) {
     },
   });
 
+  // Generate thumbnail
+  try {
+    const thumbPath = await generateThumbnail(
+      article.title,
+      facts.category,
+      facts.urgency,
+      new Date(),
+      slug
+    );
+    await prisma.article.update({
+      where: { id: createdArticle.id },
+      data: { featuredImage: thumbPath },
+    });
+  } catch (err) {
+    console.error(`Failed to generate thumbnail for ${slug}:`, err);
+  }
+
   // Mark post as processed
   await prisma.telegramPost.update({
     where: { id: post.id },
@@ -218,7 +236,7 @@ export async function processAllUnprocessed(): Promise<{
   const unprocessed = await prisma.telegramPost.findMany({
     where: { processed: false },
     orderBy: { originalDate: "asc" },
-    take: 10,
+    take: 50,
   });
 
   let processed = 0;
