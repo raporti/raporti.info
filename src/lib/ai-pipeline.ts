@@ -173,7 +173,7 @@ export async function processPost(telegramPostId: string) {
     where: { key: "image_mode" },
   });
 
-  const publishMode = publishModeSetting?.value || "manual";
+  const publishMode = publishModeSetting?.value || "auto";
   const imageMode = imageModeSetting?.value || "generated";
 
   const status = publishMode === "auto" ? "published" : "draft";

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { timeAgo, getCategoryColor, getCategoryName, URGENCY_CONFIG } from "@/lib/utils";
+import ArticleImage from "./ArticleImage";
 import type { ArticleCard as ArticleCardType } from "@/types";
 
 interface Props {
@@ -21,17 +22,12 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
         className="group block relative overflow-hidden rounded-lg"
       >
         <div className="aspect-[16/9] md:aspect-[2/1] bg-bg-secondary relative overflow-hidden rounded-lg">
-          {article.featuredImage ? (
-            <img
-              src={article.featuredImage}
-              alt={article.titleSq}
-              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-              <span className="text-7xl font-extrabold text-gray-300">R</span>
-            </div>
-          )}
+          <ArticleImage
+            src={article.featuredImage || ""}
+            alt={article.titleSq}
+            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
+            fallbackText="R"
+          />
           {/* Dark overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
@@ -69,7 +65,7 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
     );
   }
 
-  // Featured: medium-sized card with image on top, used for secondary stories
+  // Featured: medium-sized card with image on top
   if (variant === "featured") {
     return (
       <Link
@@ -77,17 +73,11 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
         className="group block"
       >
         <div className="aspect-[16/9] bg-bg-secondary relative overflow-hidden rounded-lg mb-3">
-          {article.featuredImage ? (
-            <img
-              src={article.featuredImage}
-              alt={article.titleSq}
-              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-              <span className="text-3xl font-bold text-gray-300">R</span>
-            </div>
-          )}
+          <ArticleImage
+            src={article.featuredImage || ""}
+            alt={article.titleSq}
+            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+          />
           {article.urgency === "breaking" && urgencyConf && (
             <div className="absolute top-3 left-3">
               <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-accent text-white">
@@ -121,7 +111,7 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
     );
   }
 
-  // Compact: small horizontal card for sidebars and lists
+  // Compact: small horizontal card for sidebars
   if (variant === "compact") {
     return (
       <Link
@@ -149,7 +139,7 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
         </div>
         {article.featuredImage && (
           <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-bg-secondary">
-            <img
+            <ArticleImage
               src={article.featuredImage}
               alt=""
               className="w-full h-full object-cover"
@@ -166,19 +156,12 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
       href={`/news/${article.slug}`}
       className="group block"
     >
-      {/* Thumbnail */}
       <div className="aspect-[16/9] bg-bg-secondary relative overflow-hidden rounded-lg mb-3">
-        {article.featuredImage ? (
-          <img
-            src={article.featuredImage}
-            alt={article.titleSq}
-            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-            <span className="text-3xl font-bold text-gray-300">R</span>
-          </div>
-        )}
+        <ArticleImage
+          src={article.featuredImage || ""}
+          alt={article.titleSq}
+          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+        />
         {article.urgency === "breaking" && urgencyConf && (
           <div className="absolute top-3 left-3">
             <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-accent text-white">
@@ -188,7 +171,6 @@ export default function ArticleCard({ article, variant = "default" }: Props) {
         )}
       </div>
 
-      {/* Content */}
       <div>
         <div className="flex items-center gap-2 mb-2">
           <span

@@ -43,7 +43,7 @@ async function main() {
 
   // Create default settings
   const defaultSettings = [
-    { key: "publish_mode", value: "manual" },
+    { key: "publish_mode", value: "auto" },
     { key: "image_mode", value: "generated" },
     { key: "site_name", value: "Raporti" },
   ];

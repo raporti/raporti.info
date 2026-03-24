@@ -4,6 +4,7 @@ import { formatDateTime, getCategoryColor, getCategoryName, URGENCY_CONFIG } fro
 import ShareButtons from "@/components/article/ShareButtons";
 import ReadingProgress from "@/components/article/ReadingProgress";
 import ArticleCard from "@/components/article/ArticleCard";
+import ArticleImage from "@/components/article/ArticleImage";
 import Link from "next/link";
 import { ArrowLeft, Clock, ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
@@ -175,7 +176,7 @@ export default async function ArticlePage({ params }: Props) {
           {/* Featured image */}
           {article.featuredImage && (
             <div className="mb-8 rounded-lg overflow-hidden">
-              <img
+              <ArticleImage
                 src={article.featuredImage}
                 alt={article.titleSq}
                 className="w-full aspect-[16/9] object-cover"
