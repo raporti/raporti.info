@@ -69,8 +69,8 @@ export default function AdminDashboard() {
 
       setArticles(articlesData.articles || []);
       setStats(statsData);
-    } catch {
-      router.push("/admin/login");
+    } catch (err) {
+      console.error("Dashboard fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -120,10 +120,16 @@ export default function AdminDashboard() {
   const handleIngest = async () => {
     setActionLoading("ingest");
     try {
-      await fetch("/api/ingest", { method: "POST" });
+      const res = await fetch("/api/ingest", { method: "POST" });
+      const data = await res.json();
+      if (data.error) {
+        console.error("Ingest error:", data.error, data.details);
+        alert(`Ingest: ${data.error}${data.details ? '\n' + data.details : ''}`);
+      }
       await fetchData();
     } catch (err) {
       console.error("Ingest failed:", err);
+      alert("Ingest failed: " + String(err));
     } finally {
       setActionLoading(null);
     }
