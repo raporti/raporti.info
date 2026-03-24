@@ -202,21 +202,15 @@ export async function processPost(telegramPostId: string) {
     },
   });
 
-  // Set featured image: use Telegram photo if available, otherwise generate
+  // Generate local thumbnail (Telegram CDN URLs expire, so always generate locally)
   try {
-    let featuredImage: string | null = null;
-
-    if (post.mediaUrl && post.mediaType === "photo") {
-      featuredImage = post.mediaUrl;
-    } else {
-      featuredImage = await generateThumbnail(
-        article.title,
-        facts.category,
-        facts.urgency,
-        new Date(),
-        slug
-      );
-    }
+    const featuredImage = await generateThumbnail(
+      article.title,
+      facts.category,
+      facts.urgency,
+      new Date(),
+      slug
+    );
 
     if (featuredImage) {
       await prisma.article.update({
@@ -225,7 +219,7 @@ export async function processPost(telegramPostId: string) {
       });
     }
   } catch (err) {
-    console.error(`Failed to set image for ${slug}:`, err);
+    console.error(`Failed to generate thumbnail for ${slug}:`, err);
   }
 
   // Mark post as processed

@@ -10,31 +10,21 @@ export async function POST(_request: NextRequest) {
   }
 
   try {
-    // Get all articles and their telegram posts
-    const articles = await prisma.article.findMany({
-      include: { telegramPost: true },
-    });
+    const articles = await prisma.article.findMany();
 
     let updated = 0;
     for (const article of articles) {
       try {
-        let featuredImage: string | null = null;
+        // Always generate a local thumbnail — external URLs (Telegram CDN) expire
+        const featuredImage = await generateThumbnail(
+          article.titleSq,
+          article.category,
+          article.urgency,
+          article.createdAt,
+          article.slug
+        );
 
-        // Prefer Telegram photo
-        if (article.telegramPost?.mediaUrl && article.telegramPost?.mediaType === "photo") {
-          featuredImage = article.telegramPost.mediaUrl;
-        } else {
-          // Fall back to generated thumbnail
-          featuredImage = await generateThumbnail(
-            article.titleSq,
-            article.category,
-            article.urgency,
-            article.createdAt,
-            article.slug
-          );
-        }
-
-        if (featuredImage && featuredImage !== article.featuredImage) {
+        if (featuredImage) {
           await prisma.article.update({
             where: { id: article.id },
             data: { featuredImage },
