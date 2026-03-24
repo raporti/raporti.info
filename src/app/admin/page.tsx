@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   LayoutDashboard, FileText, Settings, LogOut, RefreshCw,
   Download, Check, X, Eye, RotateCcw,
-  Zap, Clock, AlertTriangle, Archive,
+  Zap, Clock, AlertTriangle, Archive, ImageIcon,
 } from "lucide-react";
 
 interface Article {
@@ -117,6 +117,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleGenerateThumbnails = async () => {
+    setActionLoading("thumbnails");
+    try {
+      const res = await fetch("/api/thumbnails/generate-all", { method: "POST" });
+      const data = await res.json();
+      if (data.error) {
+        alert(`Thumbnails: ${data.error}`);
+      } else {
+        alert(`Generated ${data.generated} thumbnails`);
+      }
+      await fetchData();
+    } catch (err) {
+      alert("Thumbnail generation failed: " + String(err));
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleProcess = async () => {
     setActionLoading("process");
     try {
@@ -221,6 +239,14 @@ export default function AdminDashboard() {
           >
             <Zap className="w-3.5 h-3.5" />
             {actionLoading === "process" ? "Duke procesuar..." : "Proceso me AI"}
+          </button>
+          <button
+            onClick={handleGenerateThumbnails}
+            disabled={actionLoading === "thumbnails"}
+            className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-xs font-medium rounded-lg transition-colors"
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+            {actionLoading === "thumbnails" ? "Duke gjeneruar..." : "Gjenero Foto"}
           </button>
           <Link
             href="/admin/settings"
