@@ -1,12 +1,15 @@
 import OpenAI from "openai";
 import { prisma } from "./db";
 
-function getOpenAI() {
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getAIClient() {
+  return new OpenAI({
+    apiKey: process.env.AI_API_KEY,
+    baseURL: process.env.AI_BASE_URL || "https://api.groq.com/openai/v1",
+  });
 }
 
 function getModel() {
-  return process.env.OPENAI_MODEL || "gpt-4o";
+  return process.env.AI_MODEL || "llama-3.3-70b-versatile";
 }
 
 // ─── STEP A: Fact Extraction ─────────────────────────────────────────────────
@@ -51,7 +54,7 @@ export interface ExtractedFacts {
 export async function extractFacts(
   originalText: string
 ): Promise<ExtractedFacts> {
-  const response = await getOpenAI().chat.completions.create({
+  const response = await getAIClient().chat.completions.create({
     model: getModel(),
     messages: [
       { role: "system", content: FACT_EXTRACTION_PROMPT },
@@ -120,7 +123,7 @@ export async function generateArticle(
 - Urgjenca: ${facts.urgency}
 - Burimi: ${sourceName}`;
 
-  const response = await getOpenAI().chat.completions.create({
+  const response = await getAIClient().chat.completions.create({
     model: getModel(),
     messages: [
       { role: "system", content: ARTICLE_GENERATION_PROMPT },

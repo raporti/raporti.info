@@ -48,7 +48,7 @@ Fill in the required variables:
 | `DATABASE_URL` | Supabase PostgreSQL connection string |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot API token (create via @BotFather) |
 | `TELEGRAM_CHANNELS` | Comma-separated channel usernames to monitor |
-| `OPENAI_API_KEY` | OpenAI API key for article generation |
+| `AI_API_KEY` | Groq API key for article generation (free at groq.com) |
 | `ADMIN_JWT_SECRET` | Random secret for JWT tokens (min 32 chars) |
 | `ADMIN_DEFAULT_EMAIL` | Default admin email |
 | `ADMIN_DEFAULT_PASSWORD` | Default admin password |
