@@ -36,30 +36,13 @@ export async function fetchChannelMessages(
   // and the Bot API getChat + getUpdates when the bot is in the channel.
 
   try {
-    // Try Bot API approach first - get channel history via getChatHistory
-    // The bot needs to be admin in the channel for this to work
-    // Use Telegram's getUpdates with allowed_updates for channel_post
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?allowed_updates=["channel_post"]&limit=${limit}`;
-    const response = await fetch(url, { next: { revalidate: 0 } });
-    const data = await response.json();
-
-    if (data.ok && data.result) {
-      return data.result
-        .filter(
-          (update: { channel_post?: TelegramMessage }) =>
-            update.channel_post &&
-            (update.channel_post.text || update.channel_post.caption)
-        )
-        .map(
-          (update: { channel_post: TelegramMessage }) => update.channel_post
-        );
-    }
-
-    // Fallback: scrape the public t.me/s/ page
-    return await scrapePublicChannel(channelName);
+    // Scrape the public t.me/s/ page (most reliable for public channels)
+    const messages = await scrapePublicChannel(channelName);
+    console.log(`[Telegram] Scraped ${messages.length} messages from ${channelName}`);
+    return messages;
   } catch (error) {
     console.error(`Error fetching from channel ${channelName}:`, error);
-    return await scrapePublicChannel(channelName);
+    return [];
   }
 }
 
@@ -69,14 +52,16 @@ async function scrapePublicChannel(
 ): Promise<TelegramMessage[]> {
   try {
     const url = `https://t.me/s/${channelName}`;
+    console.log(`[Telegram] Scraping ${url}`);
     const response = await fetch(url, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
-      next: { revalidate: 0 },
+      cache: "no-store",
     });
     const html = await response.text();
+    console.log(`[Telegram] Got ${html.length} bytes from ${url}`);
 
     const messages: TelegramMessage[] = [];
     // Parse message blocks from the HTML
